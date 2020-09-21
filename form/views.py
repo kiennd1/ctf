@@ -1,9 +1,7 @@
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, JsonResponse, FileResponse
-import json
+from django.shortcuts import render
+from django.http import JsonResponse, FileResponse
 from .models import Info
 from .filter import *
-import base64
 from .serializers import *
 import os
 from .AES import *
@@ -14,21 +12,19 @@ def index(request):
     if check_sqli(str(id)):
         return render(request, 'form/index.html', {'message': 'Do not try to hack meeee (づ￣ ³￣)づ'})
 
-    query = 'SELECT * FROM form_info where id = ' + str(id)
     try:
+        query = 'SELECT * FROM form_info where id = ' + str(id)
         info_list = Info.objects.raw(query)
-        tmp = len(info_list)
+        if len(info_list) < 1:
+            return render(request, 'form/index.html', {})
+
+        for info in info_list:
+            if info.location:
+                info.location = encrypt(request, info.location)
+        data = InfoSerializer(info_list, many=True).data
     except:
         return render(request, 'form/index.html', {})
 
-    if len(info_list) < 1:
-        return render(request, 'form/index.html', {})
-
-    for info in info_list:
-        if info.location:
-            info.location = encrypt(info.location)
-
-    data = InfoSerializer(info_list, many=True).data
     return JsonResponse(data, safe=False)
 
 def key(request, path):
@@ -37,7 +33,7 @@ def key(request, path):
         return JsonResponse(data, safe=False)
     elif os.path.isfile(path):
         if 'db.sqlite3' in path:
-            return render(request, 'form/index.html', {'message': 'Not easy like this '})
+            return render(request, 'form/index.html', {'message': 'Not easy like this (づ￣ ³￣)づ'})
         return FileResponse(open(path, 'rb'))
     else:
         return render(request, 'form/index.html', {})
