@@ -5,3 +5,10 @@ def check_sqli(str):
         if substring in str:
             return True
     return False
+
+def check_path(str):
+    substrings = ['README.md', 'ctf', 'db.sqlite3', '.gitignore', 'form', 'manage.py']
+    for substring in substrings:
+        if substring in str:
+            return True
+    return False

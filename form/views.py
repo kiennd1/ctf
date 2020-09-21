@@ -28,6 +28,9 @@ def index(request):
     return JsonResponse(data, safe=False)
 
 def key(request, path):
+    if check_path(path):
+        return render(request, 'form/index.html', {'message': 'Do not try to hack meeee (づ￣ ³￣)づ'})
+
     if os.path.isdir(path):
         data = os.listdir('./' + path)
         return JsonResponse(data, safe=False)
