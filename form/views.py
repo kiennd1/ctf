@@ -29,7 +29,7 @@ def index(request):
 
 def key(request, path):
     if os.path.isdir(path):
-        data = os.listdir(path)
+        data = os.listdir('./' + path)
         return JsonResponse(data, safe=False)
     elif os.path.isfile(path):
         if 'db.sqlite3' in path:
