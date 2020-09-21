@@ -10,6 +10,7 @@
  ------------
  
  ```
+ pip3 install Django
  git clone https://github.com/kiennd1/ctf.git
  cd ctf
  python3 manage.py makemigrations
