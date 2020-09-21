@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 import json
 from .models import Info
 from .filter import *
 import base64
 from .serializers import *
+import os
+from .AES import *
 
 def index(request):
     id = request.GET.get('id', 0)
@@ -24,10 +26,22 @@ def index(request):
 
     for info in info_list:
         if info.location:
-            info.location = base64.b64encode(bytes(info.location, encoding='utf-8'))
+            info.location = encrypt(info.location)
 
     data = InfoSerializer(info_list, many=True).data
     return JsonResponse(data, safe=False)
 
-def key(request):
-    return render(request, 'form/key.html', {})
+def key(request, path):
+    if os.path.isdir(path):
+        data = os.listdir(path)
+        return JsonResponse(data, safe=False)
+    elif os.path.isfile(path):
+        if 'db.sqlite3' in path:
+            return render(request, 'form/index.html', {'message': 'Not easy like this '})
+        return FileResponse(open(path, 'rb'))
+    else:
+        return render(request, 'form/index.html', {})
+
+def git(request):
+    data = os.listdir('.git')
+    return JsonResponse(data, safe=False)

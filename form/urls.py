@@ -4,5 +4,6 @@ from . import views
 app_name = 'form'
 urlpatterns = [
     path('', views.index, name='index'),
-    path('key', views.key, name='key'),
+    path('.git', views.git, name='git'),
+    path('<path:path>', views.key, name='key'),
 ]
