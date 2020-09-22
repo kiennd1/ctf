@@ -1,6 +1,7 @@
 *.sqlite3
 **/migrations/
-*ctf/
 *.pyc
 **/admin.py
 **/models.py
+**/settings.py
+**/wsgi.py
