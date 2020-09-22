@@ -2,3 +2,5 @@
 **/migrations/
 *ctf/
 *.pyc
+**/admin.py
+**/models.py
